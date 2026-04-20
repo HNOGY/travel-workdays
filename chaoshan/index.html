@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=yes">
+    <meta name="theme-color" content="#1c1917">
+    <title>潮汕三日游 · H5路书</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+/* H5移动端专属样式 - 潮汕旅行路书 */
+* { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+body { overscroll-behavior: none; -webkit-overflow-scrolling: touch; }
+.h5-safe-top { height: env(safe-area-inset-top, 0px); background: transparent; }
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 8px); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes slideOutLeft { from { transform: translateX(0); } to { transform: translateX(-30%); } }
+@keyframes slideInLeft { from { transform: translateX(-30%); } to { transform: translateX(0); } }
+@keyframes slideOutRight { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes slideDown { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+.delay-100 { animation-delay: 0.1s; opacity: 0; }
+.delay-200 { animation-delay: 0.2s; opacity: 0; }
+.delay-300 { animation-delay: 0.3s; opacity: 0; }
+.delay-400 { animation-delay: 0.4s; opacity: 0; }
+.h5-page { position: fixed; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; overflow-x: hidden; background: #fafaf9; z-index: 1; transform: translateX(100%); transition: none; will-change: transform; -webkit-overflow-scrolling: touch; }
+.h5-page.active { transform: translateX(0); z-index: 10; }
+.h5-page.slide-in-right { animation: slideInRight 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; z-index: 20; }
+.h5-page.slide-out-left { animation: slideOutLeft 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; z-index: 10; }
+.h5-page.slide-in-left { animation: slideInLeft 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; z-index: 10; }
+.h5-page.slide-out-right { animation: slideOutRight 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; z-index: 20; }
+.h5-header { position: fixed; top: 0; left: 0; right: 0; height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 30; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.h5-back-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(0,0,0,0.05); transition: background 0.2s; }
+.h5-back-btn:active { background: rgba(0,0,0,0.12); }
+.h5-back-btn.text-white { background: rgba(255,255,255,0.15); }
+.h5-back-btn.text-white:active { background: rgba(255,255,255,0.25); }
+#h5-tabbar { box-shadow: 0 -1px 10px rgba(0,0,0,0.05); }
+.h5-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px 16px; color: #a8a29e; transition: color 0.2s; position: relative; }
+.h5-tab.active { color: #b45309; }
+.h5-tab.active::after { content: ''; position: absolute; top: -2px; left: 50%; transform: translateX(-50%); width: 20px; height: 3px; background: #b45309; border-radius: 2px; }
+.h5-tab:active { transform: scale(0.92); }
+.h5-day-card { border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06); transition: transform 0.2s; cursor: pointer; }
+.h5-day-card:active { transform: scale(0.98); }
+.h5-timeline-item { display: flex; gap: 12px; align-items: flex-start; }
+.h5-time-badge { flex-shrink: 0; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-top: 12px; white-space: nowrap; }
+.h5-card { flex: 1; background: white; border-radius: 16px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #f5f5f4; }
+.h5-nav-btn { display: inline-flex; align-items: center; padding: 6px 14px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border-radius: 20px; font-size: 12px; font-weight: 500; transition: all 0.2s; box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3); }
+.h5-nav-btn:active { transform: scale(0.95); box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2); }
+.h5-tips-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); border: 1px solid #f5f5f4; transition: transform 0.2s; cursor: pointer; }
+.h5-tips-card:active { transform: scale(0.98); background: #fafaf9; }
+.h5-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100; display: flex; align-items: flex-end; background: rgba(0,0,0,0); pointer-events: none; transition: background 0.3s; }
+.h5-modal.show { background: rgba(0,0,0,0.5); pointer-events: auto; }
+.h5-modal-content { width: 100%; max-height: 85vh; background: white; border-radius: 20px 20px 0 0; overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94); -webkit-overflow-scrolling: touch; }
+.h5-modal.show .h5-modal-content { transform: translateY(0); }
+.h5-modal-header { position: sticky; top: 0; background: white; display: flex; align-items: center; justify-content: space-between; padding: 16px; border-bottom: 1px solid #f5f5f4; z-index: 1; }
+.h5-modal-header::before { content: ''; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); width: 36px; height: 4px; background: #d6d3d1; border-radius: 2px; }
+.h5-modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #f5f5f4; color: #78716c; transition: background 0.2s; }
+.h5-modal-close:active { background: #e7e5e4; }
+#h5-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.h5-page::-webkit-scrollbar { display: none; }
+.h5-page { scrollbar-width: none; -ms-overflow-style: none; }
+.h5-modal-content::-webkit-scrollbar { display: none; }
+.line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+html { scroll-behavior: smooth; }
+#loading-screen { transition: opacity 0.5s ease; }
+#loading-screen.fade-out { opacity: 0; pointer-events: none; }
+.touch-feedback { position: relative; overflow: hidden; }
+.touch-feedback::after { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(0,0,0,0.06); border-radius: 50%; transform: translate(-50%, -50%); transition: width 0.4s, height 0.4s; }
+.touch-feedback:active::after { width: 200%; height: 200%; }
+@media (min-width: 768px) {
+    body { max-width: 430px; margin: 0 auto; box-shadow: 0 0 30px rgba(0,0,0,0.1); position: relative; }
+    .h5-page { max-width: 430px; left: 50%; transform: translateX(100%); margin-left: -215px; }
+    .h5-page.active { transform: translateX(-50%); left: 50%; margin-left: 0; }
+    .h5-page.slide-in-right { left: 50%; margin-left: 0; }
+    #h5-tabbar { max-width: 430px; left: 50%; transform: translateX(-50%); }
+    .h5-header { max-width: 430px; left: 50%; transform: translateX(-50%); }
+    .h5-modal { max-width: 430px; left: 50%; transform: translateX(-50%); }
+    #h5-toast { max-width: 300px; }
+    #h5-footer-sig { max-width: 430px; left: 50% !important; transform: translateX(-50%); }
+}
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 overflow-x-hidden">
+
+    <!-- 加载动画 -->
+    <div id="loading-screen" class="fixed inset-0 z-[200] bg-stone-900 flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="text-5xl mb-4 animate-bounce">🏮</div>
+        <div class="text-white text-lg font-bold mb-2">潮汕旅行路书</div>
+        <div class="text-stone-400 text-sm">H5 移动版加载中...</div>
+        <div class="mt-6 w-48 h-1 bg-stone-700 rounded-full overflow-hidden">
+            <div id="loading-bar" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width:0%"></div>
+        </div>
+    </div>
+
+    <div class="h5-safe-top"></div>
+
+    <!-- ========== 首页/封面 ========== -->
+    <section id="page-home" class="h5-page active">
+        <div class="relative min-h-screen flex flex-col">
+            <div class="absolute inset-0 bg-gradient-to-br from-amber-900/80 via-stone-900/70 to-red-900/80 z-10"></div>
+            <div class="absolute inset-0" style="background:url('https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/5c0f1253-487a-4931-a4a8-630dd660210a/image_1776666987_2_1.jpg') center/cover no-repeat;"></div>
+            <div class="relative z-20 flex-1 flex flex-col justify-center px-6 pb-24">
+                <div class="text-center">
+                    <div class="inline-block px-4 py-1.5 bg-amber-500/20 border border-amber-400/30 rounded-full text-amber-200 text-xs mb-6 animate-fade-in">
+                        2025年五一假期 · 三日深度游
+                    </div>
+                    <h1 class="text-4xl font-bold text-white mb-3 leading-tight animate-fade-in-up">千年古邑<span class="text-amber-400">棉城</span></h1>
+                    <h1 class="text-4xl font-bold text-white mb-6 leading-tight animate-fade-in-up delay-100">百载商埠<span class="text-amber-400">汕头</span></h1>
+                    <p class="text-sm text-stone-300 mb-8 leading-relaxed animate-fade-in-up delay-200">
+                        深入潮汕腹地，探寻千年民俗文化脉络<br>品味地道美食，感受工夫茶韵中的慢生活
+                    </p>
+                    <div class="grid grid-cols-3 gap-4 mb-10 animate-fade-in-up delay-300">
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl py-3"><div class="text-2xl font-bold text-amber-400">3</div><div class="text-xs text-stone-300">天行程</div></div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl py-3"><div class="text-2xl font-bold text-amber-400">12+</div><div class="text-xs text-stone-300">打卡点</div></div>
+                        <div class="bg-white/10 backdrop-blur-sm rounded-xl py-3"><div class="text-2xl font-bold text-amber-400">20+</div><div class="text-xs text-stone-300">美食推荐</div></div>
+                    </div>
+                    <button id="btn-start" class="w-full py-4 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white rounded-2xl font-bold text-lg shadow-lg shadow-amber-600/30 transition-all animate-fade-in-up delay-400">
+                        开始探索 <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 text-center animate-bounce">
+                <div class="text-stone-400 text-xs mb-1">向上滑动</div>
+                <i class="fas fa-chevron-up text-stone-400"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 行程概览页 ========== -->
+    <section id="page-overview" class="h5-page">
+        <div class="h5-header bg-white/95 backdrop-blur-md">
+            <button class="h5-back-btn" data-target="page-home"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">行程概览</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24 px-4">
+            <div class="text-center mb-6 mt-4">
+                <span class="inline-block px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">三天两夜 · 潮汕深度体验</span>
+            </div>
+            <div class="space-y-4">
+                <!-- Day 1 -->
+                <div class="h5-day-card" data-target="page-day1">
+                    <div class="h-36 bg-gradient-to-br from-amber-600 to-orange-700 rounded-t-2xl flex items-center justify-center relative overflow-hidden">
+                        <img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/1a57b4bb-6866-4a8a-b497-fd920cb65f7c/image_1776666995_1_1.jpg" alt="文光塔" class="absolute inset-0 w-full h-full object-cover opacity-30">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-600/70 to-orange-700/70"></div>
+                        <div class="text-center relative z-10"><div class="text-4xl mb-1">🏯</div><div class="text-white font-bold text-lg">DAY 1</div><div class="text-amber-200 text-xs">5月1日 · 周四</div></div>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/60"><i class="fas fa-chevron-right text-xl"></i></div>
+                    </div>
+                    <div class="bg-white rounded-b-2xl p-4 border border-t-0 border-stone-100">
+                        <h3 class="font-bold text-lg mb-1">潮阳棉城 · 千年古邑</h3>
+                        <p class="text-stone-500 text-xs mb-3">探访文光塔、古邑街区，品味传统粿品与牛肉火锅</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs">文光塔</span>
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs">古邑街区</span>
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs">牛肉火锅</span>
+                            <span class="px-2 py-0.5 bg-amber-50 text-amber-600 rounded text-xs">生腌</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Day 2 -->
+                <div class="h5-day-card" data-target="page-day2">
+                    <div class="h-36 bg-gradient-to-br from-teal-600 to-cyan-700 rounded-t-2xl flex items-center justify-center relative overflow-hidden">
+                        <img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/848f5187-8d1e-4b07-9b0d-9282e47c7898/image_1776666987_1_1.jpg" alt="小公园骑楼" class="absolute inset-0 w-full h-full object-cover opacity-30">
+                        <div class="absolute inset-0 bg-gradient-to-br from-teal-600/70 to-cyan-700/70"></div>
+                        <div class="text-center relative z-10"><div class="text-4xl mb-1">🏛️</div><div class="text-white font-bold text-lg">DAY 2</div><div class="text-teal-200 text-xs">5月2日 · 周五</div></div>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/60"><i class="fas fa-chevron-right text-xl"></i></div>
+                    </div>
+                    <div class="bg-white rounded-b-2xl p-4 border border-t-0 border-stone-100">
+                        <h3 class="font-bold text-lg mb-1">汕头老城 · 百载商埠</h3>
+                        <p class="text-stone-500 text-xs mb-3">漫步小公园骑楼群，感受开埠文化与非遗魅力</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="px-2 py-0.5 bg-teal-50 text-teal-600 rounded text-xs">小公园</span>
+                            <span class="px-2 py-0.5 bg-teal-50 text-teal-600 rounded text-xs">西堤公园</span>
+                            <span class="px-2 py-0.5 bg-teal-50 text-teal-600 rounded text-xs">非遗工艺</span>
+                            <span class="px-2 py-0.5 bg-teal-50 text-teal-600 rounded text-xs">夜景</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Day 3 -->
+                <div class="h5-day-card" data-target="page-day3">
+                    <div class="h-36 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-t-2xl flex items-center justify-center relative overflow-hidden">
+                        <img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/14580d82-6551-48ac-8f0b-7e49045e383e/image_1776667005_1_3.jpg" alt="礐石海湾" class="absolute inset-0 w-full h-full object-cover opacity-30">
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/70 to-purple-700/70"></div>
+                        <div class="text-center relative z-10"><div class="text-4xl mb-1">⛰️</div><div class="text-white font-bold text-lg">DAY 3</div><div class="text-indigo-200 text-xs">5月3日 · 周六</div></div>
+                        <div class="absolute right-4 top-1/2 -translate-y-1/2 z-10 text-white/60"><i class="fas fa-chevron-right text-xl"></i></div>
+                    </div>
+                    <div class="bg-white rounded-b-2xl p-4 border border-t-0 border-stone-100">
+                        <h3 class="font-bold text-lg mb-1">汕头山海 · 自然人文</h3>
+                        <p class="text-stone-500 text-xs mb-3">登礐石览海湾全景，探访北回归线标志塔</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-xs">礐石风景区</span>
+                            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-xs">北回归线</span>
+                            <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded text-xs">海鲜</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Day1 详情页 ========== -->
+    <section id="page-day1" class="h5-page">
+        <div class="h5-header bg-amber-600 text-white">
+            <button class="h5-back-btn text-white" data-target="page-overview"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">Day1 · 棉城古邑</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24">
+            <div class="h-44 bg-gradient-to-br from-amber-600 to-orange-700 flex items-end relative overflow-hidden">
+                <img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/1a57b4bb-6866-4a8a-b497-fd920cb65f7c/image_1776666995_1_1.jpg" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="relative z-10 p-4 text-white">
+                    <div class="text-xs text-amber-200 mb-1">5月1日 周四 | 08:00 - 22:00</div>
+                    <h3 class="text-xl font-bold">潮阳棉城 · 千年古邑探秘</h3>
+                </div>
+            </div>
+            <div class="px-4 py-6 space-y-4">
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-amber-100 text-amber-700">08:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🥣 棉城传统粿品早餐</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">前往棉城老城区的传统粿品店，品尝正宗潮阳粿汁、菜头粿、鲎粿等特色早点。推荐文光路一带的老字号店铺。</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs">粿汁 ¥8</span>
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs">菜头粿 ¥6</span>
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs">鲎粿 ¥10</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-amber-100 text-amber-700">09:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🏯 文光塔 · 千年古塔</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">始建于南宋绍兴元年(1131年)，高42.62米，八面七层，全国重点文物保护单位。塔内有螺旋石梯122级可登顶，俯瞰棉城全景。</p>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div class="bg-amber-50 rounded-lg p-2"><div class="text-xs text-amber-600 font-medium">📍 坐标</div><div class="text-xs text-stone-600">23.259°N, 116.602°E</div></div>
+                            <div class="bg-amber-50 rounded-lg p-2"><div class="text-xs text-amber-600 font-medium">🎫 门票</div><div class="text-xs text-stone-600">免费开放</div></div>
+                        </div>
+                        <button class="h5-nav-btn" data-lat="23.259320" data-lng="116.602460" data-name="文光塔"><i class="fas fa-location-arrow mr-1"></i> 导航前往</button>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-amber-100 text-amber-700">11:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🏘️ 棉城古邑街区</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">漫步西门直街、中华路等老街巷，探访400年历史的"龙头厝"、铜门闾等潮汕传统民居。</p>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-2.5 text-xs">
+                            <span class="font-medium text-yellow-700">💡 本地人推荐：</span>
+                            <span class="text-yellow-600">从西门直街向南走，巷子里藏着不少清代老宅，游客稀少。</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-red-100 text-red-700">12:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🥩 潮汕牛肉火锅</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">讲究"现宰现卖"，按部位细分为脖仁、吊龙、五花趾等十余个部位。锅底仅用牛骨清汤配白萝卜，蘸料以沙茶酱为主。</p>
+                        <div class="grid grid-cols-3 gap-1.5 mb-2">
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🥩</div><div class="text-xs text-stone-600">脖仁 8秒</div></div>
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🥩</div><div class="text-xs text-stone-600">吊龙 10秒</div></div>
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🥩</div><div class="text-xs text-stone-600">五花趾 15秒</div></div>
+                        </div>
+                        <div class="text-xs text-stone-500">💰 人均80-120元 | 推荐：杏花吴记、八合里海记</div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-amber-100 text-amber-700">14:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🍵 工夫茶制作体验</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">国家级非物质文化遗产，讲究"关公巡城"、"韩信点兵"等冲泡技法。品凤凰单丛茶，感受"宁可一日无食，不可一日无茶"的生活哲学。</p>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-2.5 text-xs">
+                            <span class="font-medium text-emerald-700">🎵 潮乐欣赏：</span>
+                            <span class="text-emerald-600">下午时段部分茶馆有潮州弦诗乐演奏。</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-amber-100 text-amber-700">17:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🌅 东山曲水流 · 黄昏摄影</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">东山风景区北坡的曲水流，傍晚时分光线柔和，是拍摄的黄金时段。</p>
+                        <div class="bg-amber-50 rounded-lg p-2.5 text-xs">
+                            <span class="font-medium text-amber-700">📷 摄影建议：</span>
+                            <span class="text-stone-600">17:00-18:30黄金光线，建议携带广角镜头。</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-purple-100 text-purple-700">19:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🦐 生腌夜宵档</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">潮汕生腌被称为"毒药"，一口上瘾。推荐品尝生腌虾姑、血蚶、蟹等，配上一碗白粥。</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="px-2 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">虾姑 ¥35</span>
+                            <span class="px-2 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">血蚶 ¥25</span>
+                            <span class="px-2 py-0.5 bg-purple-50 text-purple-600 rounded text-xs">蟹 ¥45</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Day2 详情页 ========== -->
+    <section id="page-day2" class="h5-page">
+        <div class="h5-header bg-teal-600 text-white">
+            <button class="h5-back-btn text-white" data-target="page-overview"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">Day2 · 汕头老城</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24">
+            <div class="h-44 bg-gradient-to-br from-teal-600 to-cyan-700 flex items-end relative overflow-hidden">
+                <img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/848f5187-8d1e-4b07-9b0d-9282e47c7898/image_1776666987_1_1.jpg" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="relative z-10 p-4 text-white">
+                    <div class="text-xs text-teal-200 mb-1">5月2日 周五 | 08:00 - 22:30</div>
+                    <h3 class="text-xl font-bold">汕头老城 · 百载商埠漫游</h3>
+                </div>
+            </div>
+            <div class="px-4 py-6 space-y-4">
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-teal-100 text-teal-700">08:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🍜 老市区传统早餐</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">前往西堤路、民族路一带的老字号早餐摊。推荐品尝肠粉、粿条汤、猪肠胀糯米等。</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs">肠粉 ¥10</span>
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs">粿条汤 ¥12</span>
+                            <span class="px-2 py-0.5 bg-orange-50 text-orange-600 rounded text-xs">猪肠胀糯米 ¥15</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-teal-100 text-teal-700">09:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🏛️ 小公园历史文化街区</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">以中山纪念亭为中心，环形放射状分布着中国大陆规模最大的近代骑楼建筑群（728座历史建筑）。</p>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div class="bg-teal-50 rounded-lg p-2"><div class="text-xs text-teal-600 font-medium">📍 坐标</div><div class="text-xs text-stone-600">23.355°N, 116.674°E</div></div>
+                            <div class="bg-teal-50 rounded-lg p-2"><div class="text-xs text-teal-600 font-medium">🎫 门票</div><div class="text-xs text-stone-600">免费开放</div></div>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-2.5 text-xs mb-2">
+                            <span class="font-medium text-blue-700">🎯 推荐路线：</span>
+                            <span class="text-blue-600">中山纪念亭→安平路→升平路→国平路→西堤路</span>
+                        </div>
+                        <button class="h5-nav-btn" data-lat="23.354891" data-lng="116.673890" data-name="小公园"><i class="fas fa-location-arrow mr-1"></i> 导航前往</button>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-red-100 text-red-700">12:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🍲 网红餐饮集中区</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">小公园周边聚集了众多潮汕特色餐饮。</p>
+                        <div class="grid grid-cols-4 gap-1.5">
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🦪</div><div class="text-xs text-stone-600">蚝烙</div></div>
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🍬</div><div class="text-xs text-stone-600">糖葱薄饼</div></div>
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🫔</div><div class="text-xs text-stone-600">粽球</div></div>
+                            <div class="text-center p-1.5 bg-red-50 rounded-lg"><div class="text-base">🥟</div><div class="text-xs text-stone-600">水晶球</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-teal-100 text-teal-700">14:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🎨 潮汕工艺展示馆 · 非遗互动</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">参观潮汕文艺人才一条街，近距离观赏泥塑、木雕、嵌瓷、抽纱等非遗手工作品。</p>
+                        <div class="bg-purple-50 border border-purple-200 rounded-lg p-2.5 text-xs">
+                            <span class="font-medium text-purple-700">🎭 非遗项目：</span>
+                            <span class="text-purple-600">潮绣、木雕、嵌瓷、抽纱、剪纸、泥塑</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-teal-100 text-teal-700">16:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🌊 西堤公园 · 海湾落日</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">位于汕头内海湾畔，可远眺礐石大桥和对岸风光。傍晚时分海风习习，是欣赏落日的绝佳地点。</p>
+                        <button class="h5-nav-btn" data-lat="23.352" data-lng="116.668" data-name="西堤公园"><i class="fas fa-location-arrow mr-1"></i> 导航前往</button>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-purple-100 text-purple-700">19:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🏮 小公园夜景 · 传统夜市</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">夜幕降临后的小公园别有韵味，骑楼群在灯光映照下更显华美。</p>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-2.5 text-xs">
+                            <span class="font-medium text-yellow-700">⚡ 五一提醒：</span>
+                            <span class="text-yellow-600">节假日晚间人流量极大，建议19:00前到达。</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Day3 详情页 ========== -->
+    <section id="page-day3" class="h5-page">
+        <div class="h5-header bg-indigo-600 text-white">
+            <button class="h5-back-btn text-white" data-target="page-overview"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">Day3 · 山海之旅</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24">
+            <div class="h-44 bg-gradient-to-br from-indigo-600 to-purple-700 flex items-end relative overflow-hidden">
+                <img src="https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/14580d82-6551-48ac-8f0b-7e49045e383e/image_1776667005_1_3.jpg" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="relative z-10 p-4 text-white">
+                    <div class="text-xs text-indigo-200 mb-1">5月3日 周六 | 07:30 - 20:00</div>
+                    <h3 class="text-xl font-bold">汕头山海 · 自然人文之旅</h3>
+                </div>
+            </div>
+            <div class="px-4 py-6 space-y-4">
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-indigo-100 text-indigo-700">07:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🦐 海鲜早茶</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed">前往濠江区或龙湖区的早茶店，品尝潮汕特色早茶点心。</p>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-indigo-100 text-indigo-700">09:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">⛰️ 礐石风景区</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">国家AAAA级旅游区，汕头八景之首。总面积20.77平方公里，由43座山峰组成。</p>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div class="bg-indigo-50 rounded-lg p-2"><div class="text-xs text-indigo-600 font-medium">📍 坐标</div><div class="text-xs text-stone-600">23.330°N, 116.683°E</div></div>
+                            <div class="bg-indigo-50 rounded-lg p-2"><div class="text-xs text-indigo-600 font-medium">🎫 门票</div><div class="text-xs text-stone-600">¥15</div></div>
+                        </div>
+                        <button class="h5-nav-btn" data-lat="23.329920" data-lng="116.683492" data-name="礐石风景区"><i class="fas fa-location-arrow mr-1"></i> 导航前往</button>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-red-100 text-red-700">12:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🐟 濠江海鲜午餐</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed">礐石附近的濠江区以海鲜闻名，推荐品尝鱼饭、薄壳米、紫菜炒饭等。</p>
+                        <div class="text-xs text-stone-500 mt-2">💰 人均60-100元</div>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-indigo-100 text-indigo-700">14:30</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🌐 北回归线标志塔</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">汕头重要的科普教育基地和旅游景点。每年夏至日正午阳光直射塔顶无影。</p>
+                        <button class="h5-nav-btn" data-lat="23.438522" data-lng="116.592750" data-name="北回归线标志塔"><i class="fas fa-location-arrow mr-1"></i> 导航前往</button>
+                    </div>
+                </div>
+                <div class="h5-timeline-item">
+                    <div class="h5-time-badge bg-rose-100 text-rose-700">17:00</div>
+                    <div class="h5-card">
+                        <h4 class="font-bold text-base mb-1">🍽️ 潮汕大排档告别宴</h4>
+                        <p class="text-stone-600 text-xs leading-relaxed mb-2">最后一餐选择汕头本地人推荐的大排档，为旅程画上圆满句号。</p>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <div class="text-center p-1.5 bg-rose-50 rounded-lg"><div class="text-base">🦆</div><div class="text-xs text-stone-600">卤鹅</div></div>
+                            <div class="text-center p-1.5 bg-rose-50 rounded-lg"><div class="text-base">🦪</div><div class="text-xs text-stone-600">蚝烙</div></div>
+                            <div class="text-center p-1.5 bg-rose-50 rounded-lg"><div class="text-base">🧆</div><div class="text-xs text-stone-600">牛肉丸</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 美食页 ========== -->
+    <section id="page-food" class="h5-page">
+        <div class="h5-header bg-white/95 backdrop-blur-md">
+            <button class="h5-back-btn" data-target="page-overview"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">美食地图</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24 px-4">
+            <div class="text-center mt-4 mb-6">
+                <h3 class="text-xl font-bold text-stone-800 mb-1">🍽️ 潮汕美食全攻略</h3>
+                <p class="text-xs text-stone-500">潮汕被誉为"中国美食孤岛"</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl p-4 border border-orange-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🥩</div><h4 class="font-bold text-sm text-stone-800 mb-1">潮汕牛肉火锅</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">现宰黄牛，按部位细分涮制</p>
+                    <div class="text-xs text-amber-600 font-medium">💰 人均80-120元</div>
+                </div>
+                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🍜</div><h4 class="font-bold text-sm text-stone-800 mb-1">粿条/粿汁</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">大米磨浆蒸制，口感爽滑有韧性</p>
+                    <div class="text-xs text-green-600 font-medium">💰 人均8-15元</div>
+                </div>
+                <div class="bg-gradient-to-br from-purple-50 to-violet-50 rounded-xl p-4 border border-purple-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🦐</div><h4 class="font-bold text-sm text-stone-800 mb-1">生腌海鲜</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">虾姑、血蚶、蟹等，一口上瘾</p>
+                    <div class="text-xs text-purple-600 font-medium">💰 人均30-60元</div>
+                </div>
+                <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-4 border border-yellow-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🦪</div><h4 class="font-bold text-sm text-stone-800 mb-1">蚝烙</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">鲜蚝配薯粉煎制，外酥内嫩</p>
+                    <div class="text-xs text-yellow-600 font-medium">💰 人均20-35元</div>
+                </div>
+                <div class="bg-gradient-to-br from-pink-50 to-rose-50 rounded-xl p-4 border border-pink-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🍬</div><h4 class="font-bold text-sm text-stone-800 mb-1">糖葱薄饼</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">非遗工艺手工拉糖16层中空</p>
+                    <div class="text-xs text-pink-600 font-medium">💰 人均10-15元</div>
+                </div>
+                <div class="bg-gradient-to-br from-cyan-50 to-sky-50 rounded-xl p-4 border border-cyan-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🫔</div><h4 class="font-bold text-sm text-stone-800 mb-1">鲎粿</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">潮阳独有，米浆蒸制后煎制</p>
+                    <div class="text-xs text-cyan-600 font-medium">💰 人均10-15元</div>
+                </div>
+                <div class="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-xl p-4 border border-teal-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🦆</div><h4 class="font-bold text-sm text-stone-800 mb-1">潮汕卤鹅</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">南姜八角卤制，皮脆肉嫩</p>
+                    <div class="text-xs text-teal-600 font-medium">💰 人均40-60元</div>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-xl p-4 border border-indigo-100 active:scale-95 transition-transform">
+                    <div class="text-2xl mb-2">🍵</div><h4 class="font-bold text-sm text-stone-800 mb-1">工夫茶</h4>
+                    <p class="text-xs text-stone-500 mb-2 line-clamp-2">凤凰单丛，关公巡城冲泡</p>
+                    <div class="text-xs text-indigo-600 font-medium">💰 人均30-80元</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 攻略页 ========== -->
+    <section id="page-tips" class="h5-page">
+        <div class="h5-header bg-white/95 backdrop-blur-md">
+            <button class="h5-back-btn" data-target="page-overview"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">实用攻略</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24 px-4">
+            <div class="mt-4 space-y-3">
+                <div class="h5-tips-card" data-modal="modal-driving">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center text-xl">🚗</div>
+                        <div class="flex-1"><h4 class="font-bold text-sm">自驾指南</h4><p class="text-xs text-stone-500">路线规划、停车位、路况信息</p></div>
+                        <i class="fas fa-chevron-right text-stone-400"></i>
+                    </div>
+                </div>
+                <div class="h5-tips-card" data-modal="modal-hotel">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center text-xl">🏨</div>
+                        <div class="flex-1"><h4 class="font-bold text-sm">住宿推荐</h4><p class="text-xs text-stone-500">民宿、星级酒店、连锁品牌</p></div>
+                        <i class="fas fa-chevron-right text-stone-400"></i>
+                    </div>
+                </div>
+                <div class="h5-tips-card" data-modal="modal-emergency">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-xl">🆘</div>
+                        <div class="flex-1"><h4 class="font-bold text-sm">应急信息</h4><p class="text-xs text-stone-500">医疗、警务、道路救援</p></div>
+                        <i class="fas fa-chevron-right text-stone-400"></i>
+                    </div>
+                </div>
+                <div class="h5-tips-card" data-modal="modal-culture">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-xl">🎭</div>
+                        <div class="flex-1"><h4 class="font-bold text-sm">文化禁忌</h4><p class="text-xs text-stone-500">宗教礼仪、工夫茶礼仪、饮食注意</p></div>
+                        <i class="fas fa-chevron-right text-stone-400"></i>
+                    </div>
+                </div>
+                <div class="h5-tips-card" data-modal="modal-budget">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-xl">💰</div>
+                        <div class="flex-1"><h4 class="font-bold text-sm">预算模板</h4><p class="text-xs text-stone-500">经济型/舒适型/品质型三档</p></div>
+                        <i class="fas fa-chevron-right text-stone-400"></i>
+                    </div>
+                </div>
+                <div class="h5-tips-card" data-modal="modal-photo">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center text-xl">📷</div>
+                        <div class="flex-1"><h4 class="font-bold text-sm">摄影攻略</h4><p class="text-xs text-stone-500">黄金拍摄点位、构图建议</p></div>
+                        <i class="fas fa-chevron-right text-stone-400"></i>
+                    </div>
+                </div>
+                <!-- 紧急联系卡 -->
+                <div class="mt-6 bg-gradient-to-r from-red-600 to-rose-700 rounded-2xl p-5 text-white">
+                    <h4 class="font-bold text-sm mb-3 text-center">📱 紧急联系卡（建议截图保存）</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <a href="tel:110" class="bg-white/15 backdrop-blur rounded-xl p-3 text-center active:bg-white/25 transition"><div class="text-xl mb-1">🚨</div><div class="text-xs">报警</div><div class="text-base font-bold">110</div></a>
+                        <a href="tel:120" class="bg-white/15 backdrop-blur rounded-xl p-3 text-center active:bg-white/25 transition"><div class="text-xl mb-1">🏥</div><div class="text-xs">急救</div><div class="text-base font-bold">120</div></a>
+                        <a href="tel:12122" class="bg-white/15 backdrop-blur rounded-xl p-3 text-center active:bg-white/25 transition"><div class="text-xl mb-1">🚗</div><div class="text-xs">道路救援</div><div class="text-base font-bold">12122</div></a>
+                        <a href="tel:12345" class="bg-white/15 backdrop-blur rounded-xl p-3 text-center active:bg-white/25 transition"><div class="text-xl mb-1">📞</div><div class="text-xs">旅游投诉</div><div class="text-base font-bold">12345</div></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 底部导航栏 ========== -->
+    <nav id="h5-tabbar" class="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-stone-200 hidden">
+        <div class="flex items-center justify-around py-2 pb-safe">
+            <button class="h5-tab active" data-page="page-overview"><i class="fas fa-route text-lg"></i><span class="text-xs mt-0.5">行程</span></button>
+            <button class="h5-tab" data-page="page-food"><i class="fas fa-utensils text-lg"></i><span class="text-xs mt-0.5">美食</span></button>
+            <button class="h5-tab" data-page="page-tips"><i class="fas fa-compass text-lg"></i><span class="text-xs mt-0.5">攻略</span></button>
+            <button class="h5-tab" data-page="page-share"><i class="fas fa-share-alt text-lg"></i><span class="text-xs mt-0.5">分享</span></button>
+        </div>
+    </nav>
+
+    <!-- ========== 分享页 ========== -->
+    <section id="page-share" class="h5-page">
+        <div class="h5-header bg-white/95 backdrop-blur-md">
+            <button class="h5-back-btn" data-target="page-overview"><i class="fas fa-chevron-left"></i></button>
+            <h2 class="text-base font-bold">分享路书</h2>
+            <div class="w-8"></div>
+        </div>
+        <div class="pt-14 pb-24 px-4">
+            <div class="mt-8 text-center">
+                <div class="w-24 h-24 bg-amber-100 rounded-full flex items-center justify-center text-5xl mx-auto mb-4">🏮</div>
+                <h3 class="text-xl font-bold text-stone-800 mb-2">潮汕五一旅行路书</h3>
+                <p class="text-sm text-stone-500 mb-8">三天两夜 · 棉城汕头深度游</p>
+                <div class="space-y-3 max-w-xs mx-auto">
+                    <button id="btn-copy-link" class="w-full py-3.5 bg-amber-600 text-white rounded-xl font-medium active:bg-amber-700 transition flex items-center justify-center gap-2"><i class="fas fa-link"></i> 复制链接</button>
+                    <button id="btn-share-wechat" class="w-full py-3.5 bg-green-600 text-white rounded-xl font-medium active:bg-green-700 transition flex items-center justify-center gap-2"><i class="fab fa-weixin"></i> 分享到微信</button>
+                    <button id="btn-share-native" class="w-full py-3.5 bg-stone-800 text-white rounded-xl font-medium active:bg-stone-900 transition flex items-center justify-center gap-2"><i class="fas fa-share-alt"></i> 更多分享方式</button>
+                </div>
+                <div class="mt-8 p-4 bg-stone-100 rounded-xl text-xs text-stone-500 leading-relaxed">
+                    <p class="mb-2">💡 分享提示</p>
+                    <p>• 直接将此HTML文件发送给好友即可</p>
+                    <p>• 对方无需安装任何APP，浏览器直接打开</p>
+                    <p>• 支持添加到手机主屏幕，像APP一样使用</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 模态框 ========== -->
+    <!-- 自驾指南 -->
+    <div id="modal-driving" class="h5-modal">
+        <div class="h5-modal-content">
+            <div class="h5-modal-header"><h3 class="font-bold text-base">🚗 自驾指南</h3><button class="h5-modal-close"><i class="fas fa-times"></i></button></div>
+            <div class="p-4 space-y-4">
+                <div><h4 class="font-bold text-sm mb-2 text-stone-800">城际交通路线</h4>
+                    <div class="space-y-3">
+                        <div class="border-l-4 border-amber-400 pl-3"><div class="font-medium text-sm text-stone-800">棉城 → 汕头市区</div><div class="text-xs text-stone-600">G324国道（约30分钟）</div></div>
+                        <div class="border-l-4 border-teal-400 pl-3"><div class="font-medium text-sm text-stone-800">汕头市区 → 礐石风景区</div><div class="text-xs text-stone-600">经礐石大桥（约15分钟）</div></div>
+                        <div class="border-l-4 border-indigo-400 pl-3"><div class="font-medium text-sm text-stone-800">礐石 → 北回归线标志塔</div><div class="text-xs text-stone-600">经海湾大桥（约25分钟）</div></div>
+                    </div>
+                </div>
+                <div><h4 class="font-bold text-sm mb-2 text-stone-800">停车位分析</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-start gap-2 p-2.5 bg-green-50 rounded-lg"><span class="text-green-600">🟢</span><div><div class="font-medium text-xs">文光公园停车场</div><div class="text-xs text-stone-500">免费，车位充足</div></div></div>
+                        <div class="flex items-start gap-2 p-2.5 bg-yellow-50 rounded-lg"><span class="text-yellow-600">🟡</span><div><div class="font-medium text-xs">小公园地下停车场</div><div class="text-xs text-stone-500">五一较紧张，¥10/小时</div></div></div>
+                        <div class="flex items-start gap-2 p-2.5 bg-green-50 rounded-lg"><span class="text-green-600">🟢</span><div><div class="font-medium text-xs">礐石风景区停车场</div><div class="text-xs text-stone-500">车位充足，¥5/次</div></div></div>
+                    </div>
+                </div>
+                <div><h4 class="font-bold text-sm mb-2 text-stone-800">路况提醒</h4>
+                    <div class="space-y-2 text-xs text-stone-600">
+                        <div class="p-2.5 bg-red-50 rounded-lg">⚠️ 5月1日上午8-10点为进城高峰，建议提前出发</div>
+                        <div class="p-2.5 bg-blue-50 rounded-lg">💡 使用高德/百度地图实时导航避开拥堵</div>
+                        <div class="p-2.5 bg-green-50 rounded-lg">✅ 早7:00前和晚20:00后路况最佳</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 住宿推荐 -->
+    <div id="modal-hotel" class="h5-modal">
+        <div class="h5-modal-content">
+            <div class="h5-modal-header"><h3 class="font-bold text-base">🏨 住宿推荐</h3><button class="h5-modal-close"><i class="fas fa-times"></i></button></div>
+            <div class="p-4 space-y-4">
+                <div><h4 class="font-bold text-sm mb-2">🏮 棉城住宿（第一晚）</h4>
+                    <div class="space-y-2">
+                        <div class="p-3 bg-amber-50 rounded-lg"><div class="flex justify-between"><div class="font-medium text-xs">文化主题民宿</div><span class="text-xs bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded">推荐</span></div><div class="text-xs text-stone-500 mt-1">💰 ¥200-400/晚</div></div>
+                        <div class="p-3 bg-stone-50 rounded-lg"><div class="font-medium text-xs">连锁酒店（如家/汉庭）</div><div class="text-xs text-stone-500 mt-1">💰 ¥150-250/晚</div></div>
+                    </div>
+                </div>
+                <div><h4 class="font-bold text-sm mb-2">🏨 汕头住宿（第二三晚）</h4>
+                    <div class="space-y-2">
+                        <div class="p-3 bg-teal-50 rounded-lg"><div class="flex justify-between"><div class="font-medium text-xs">星级酒店</div><span class="text-xs bg-teal-200 text-teal-800 px-1.5 py-0.5 rounded">舒适</span></div><div class="text-xs text-stone-500 mt-1">💰 ¥400-800/晚</div></div>
+                        <div class="p-3 bg-purple-50 rounded-lg"><div class="flex justify-between"><div class="font-medium text-xs">骑楼特色客栈</div><span class="text-xs bg-purple-200 text-purple-800 px-1.5 py-0.5 rounded">体验</span></div><div class="text-xs text-stone-500 mt-1">💰 ¥300-500/晚</div></div>
+                    </div>
+                </div>
+                <div class="text-xs text-stone-500 bg-stone-50 rounded-lg p-3">💡 五一期间房价上浮50%-100%，建议提前2-3周预订</div>
+            </div>
+        </div>
+    </div>
+    <!-- 应急信息 -->
+    <div id="modal-emergency" class="h5-modal">
+        <div class="h5-modal-content">
+            <div class="h5-modal-header"><h3 class="font-bold text-base">🆘 应急信息</h3><button class="h5-modal-close"><i class="fas fa-times"></i></button></div>
+            <div class="p-4 space-y-3">
+                <h4 class="font-bold text-sm">医疗联络点</h4>
+                <a href="tel:07548855045" class="flex items-center gap-3 p-3 bg-red-50 rounded-lg active:bg-red-100"><i class="fas fa-hospital text-red-500"></i><div class="flex-1"><div class="font-medium text-xs">汕头市中心医院</div><div class="text-xs text-stone-500">金平区外马路114号</div></div><i class="fas fa-phone text-red-400"></i></a>
+                <a href="tel:07548382257" class="flex items-center gap-3 p-3 bg-red-50 rounded-lg active:bg-red-100"><i class="fas fa-hospital text-red-500"></i><div class="flex-1"><div class="font-medium text-xs">潮阳区人民医院</div><div class="text-xs text-stone-500">潮阳区中华路</div></div><i class="fas fa-phone text-red-400"></i></a>
+                <h4 class="font-bold text-sm mt-4">天气应对</h4>
+                <div class="text-xs text-stone-600 space-y-1 bg-blue-50 rounded-lg p-3"><p>• 五一气温约25-32°C，注意防暑防晒</p><p>• 可能有短时阵雨，建议携带折叠伞</p><p>• 雨天备选：潮汕历史文化博览中心</p></div>
+            </div>
+        </div>
+    </div>
+    <!-- 文化禁忌 -->
+    <div id="modal-culture" class="h5-modal">
+        <div class="h5-modal-content">
+            <div class="h5-modal-header"><h3 class="font-bold text-base">🎭 文化禁忌</h3><button class="h5-modal-close"><i class="fas fa-times"></i></button></div>
+            <div class="p-4 space-y-4">
+                <div><h4 class="font-bold text-sm mb-2">🙏 宗教与民俗</h4><div class="space-y-1.5 text-xs text-stone-600"><p>⚠️ 进入寺庙祠堂请勿大声喧哗</p><p>⚠️ 拍摄宗教场所前请征得同意</p><p>⚠️ 遇游神赛会请保持尊重</p></div></div>
+                <div><h4 class="font-bold text-sm mb-2">🍵 工夫茶礼仪</h4><div class="space-y-1.5 text-xs text-stone-600"><p>✅ 接茶时用食指和中指轻叩桌面（"叩手礼"）</p><p>✅ 茶杯要一口饮尽</p><p>❌ 不要用手指指向茶壶嘴</p><p>❌ 不要拒绝主人的茶</p></div></div>
+                <div><h4 class="font-bold text-sm mb-2">🍽️ 饮食注意</h4><div class="space-y-1.5 text-xs text-stone-600"><p>💡 生腌海鲜肠胃敏感者建议少量尝试</p><p>💡 牛肉火锅涮制时间听从店家建议</p><p>💡 潮汕菜偏清淡，如需辣椒请主动索取</p></div></div>
+            </div>
+        </div>
+    </div>
+    <!-- 预算模板 -->
+    <div id="modal-budget" class="h5-modal">
+        <div class="h5-modal-content">
+            <div class="h5-modal-header"><h3 class="font-bold text-base">💰 预算模板</h3><button class="h5-modal-close"><i class="fas fa-times"></i></button></div>
+            <div class="p-4">
+                <p class="text-xs text-stone-500 mb-3 text-center">三日行程预算参考（2人出行）</p>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead><tr class="border-b border-stone-200"><th class="text-left py-2 px-2 font-medium text-stone-600">项目</th><th class="text-center py-2 px-2 font-medium text-stone-600">经济</th><th class="text-center py-2 px-2 font-medium text-stone-600">舒适</th><th class="text-center py-2 px-2 font-medium text-stone-600">品质</th></tr></thead>
+                        <tbody>
+                            <tr class="border-b border-stone-100"><td class="py-2 px-2">住宿2晚</td><td class="text-center py-2">¥400</td><td class="text-center py-2">¥800</td><td class="text-center py-2">¥1500</td></tr>
+                            <tr class="border-b border-stone-100"><td class="py-2 px-2">餐饮3天</td><td class="text-center py-2">¥500</td><td class="text-center py-2">¥800</td><td class="text-center py-2">¥1200</td></tr>
+                            <tr class="border-b border-stone-100"><td class="py-2 px-2">交通油费</td><td class="text-center py-2">¥200</td><td class="text-center py-2">¥300</td><td class="text-center py-2">¥400</td></tr>
+                            <tr class="border-b border-stone-100"><td class="py-2 px-2">门票体验</td><td class="text-center py-2">¥50</td><td class="text-center py-2">¥100</td><td class="text-center py-2">¥200</td></tr>
+                            <tr class="border-b border-stone-100"><td class="py-2 px-2">购物伴手礼</td><td class="text-center py-2">¥100</td><td class="text-center py-2">¥300</td><td class="text-center py-2">¥500</td></tr>
+                            <tr class="bg-amber-50 font-bold"><td class="py-2 px-2">合计</td><td class="text-center py-2 text-amber-700">¥1250</td><td class="text-center py-2 text-amber-700">¥2300</td><td class="text-center py-2 text-amber-700">¥3800</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-xs text-stone-400 mt-3 text-center">* 五一期间住宿价格可能上浮50%-100%</p>
+            </div>
+        </div>
+    </div>
+    <!-- 摄影攻略 -->
+    <div id="modal-photo" class="h5-modal">
+        <div class="h5-modal-content">
+            <div class="h5-modal-header"><h3 class="font-bold text-base">📷 摄影攻略</h3><button class="h5-modal-close"><i class="fas fa-times"></i></button></div>
+            <div class="p-4 space-y-3">
+                <div class="p-3 bg-amber-50 rounded-lg"><h4 class="font-bold text-xs text-stone-800 mb-1">📍 文光塔</h4><div class="text-xs text-stone-600 space-y-0.5"><p>⏰ 清晨7:00-8:30 侧光照射</p><p>📸 塔南侧30米处仰拍</p><p>💡 利用古树作为前景框架</p></div></div>
+                <div class="p-3 bg-teal-50 rounded-lg"><h4 class="font-bold text-xs text-stone-800 mb-1">📍 小公园中山纪念亭</h4><div class="text-xs text-stone-600 space-y-0.5"><p>⏰ 清晨6:30-7:30 / 夜间19:00-21:00</p><p>📸 安平路方向正面拍摄</p><p>💡 利用放射状街道透视线条</p></div></div>
+                <div class="p-3 bg-indigo-50 rounded-lg"><h4 class="font-bold text-xs text-stone-800 mb-1">📍 礐石飘然亭</h4><div class="text-xs text-stone-600 space-y-0.5"><p>⏰ 上午9:00-11:00 顺光</p><p>📸 亭上全景拍摄城区与海湾</p><p>💡 广角镜头必备，可拍180°全景</p></div></div>
+                <div class="p-3 bg-rose-50 rounded-lg"><h4 class="font-bold text-xs text-stone-800 mb-1">📍 西堤公园日落</h4><div class="text-xs text-stone-600 space-y-0.5"><p>⏰ 17:30-18:30 日落金色光线</p><p>📸 面向西南，以礐石大桥为背景</p><p>💡 剪影效果，渔船作为前景</p></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast提示 -->
+    <div id="h5-toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-[300] bg-stone-800 text-white text-sm px-5 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 transform -translate-y-2"></div>
+
+    <!-- 页脚签名 -->
+    <div class="fixed bottom-16 left-0 right-0 z-40 text-center py-1 pointer-events-none" id="h5-footer-sig" style="display:none;">
+        <p class="text-xs text-stone-400">由 <a href="https://with.woa.com/" style="color: #8A2BE2;" target="_blank" class="pointer-events-auto">With</a> 通过自然语言生成</p>
+    </div>
+
+    <!-- 内联JS脚本 -->
+    <script>
+    (function() {
+        'use strict';
+        var pageHistory = ['page-home'];
+        var isAnimating = false;
+        var tabbarPages = ['page-overview', 'page-food', 'page-tips', 'page-share'];
+
+        function navigateTo(targetId, direction) {
+            if (isAnimating) return;
+            var currentPage = document.querySelector('.h5-page.active');
+            var targetPage = document.getElementById(targetId);
+            if (!currentPage || !targetPage || currentPage === targetPage) return;
+            isAnimating = true;
+            if (direction === 'forward') {
+                targetPage.style.display = '';
+                targetPage.classList.remove('active');
+                targetPage.classList.add('slide-in-right');
+                currentPage.classList.add('slide-out-left');
+                setTimeout(function() {
+                    currentPage.classList.remove('active', 'slide-out-left');
+                    targetPage.classList.remove('slide-in-right');
+                    targetPage.classList.add('active');
+                    targetPage.scrollTop = 0;
+                    isAnimating = false;
+                }, 350);
+                pageHistory.push(targetId);
+            } else {
+                currentPage.classList.add('slide-out-right');
+                targetPage.style.display = '';
+                targetPage.classList.add('slide-in-left');
+                setTimeout(function() {
+                    currentPage.classList.remove('active', 'slide-out-right');
+                    targetPage.classList.remove('slide-in-left');
+                    targetPage.classList.add('active');
+                    isAnimating = false;
+                }, 350);
+                pageHistory.pop();
+            }
+            updateTabbar(targetId);
+            toggleTabbar(targetId);
+        }
+
+        function goBack() {
+            if (pageHistory.length <= 1) return;
+            var prevPageId = pageHistory[pageHistory.length - 2];
+            navigateTo(prevPageId, 'back');
+        }
+
+        function toggleTabbar(pageId) {
+            var tabbar = document.getElementById('h5-tabbar');
+            var footerSig = document.getElementById('h5-footer-sig');
+            if (pageId === 'page-home') {
+                tabbar.classList.add('hidden');
+                footerSig.style.display = 'none';
+            } else {
+                tabbar.classList.remove('hidden');
+                footerSig.style.display = 'block';
+            }
+        }
+
+        function updateTabbar(pageId) {
+            document.querySelectorAll('.h5-tab').forEach(function(tab) {
+                tab.classList.toggle('active', tab.dataset.page === pageId);
+            });
+        }
+
+        function openModal(modalId) {
+            var modal = document.getElementById(modalId);
+            if (modal) { modal.classList.add('show'); document.body.style.overflow = 'hidden'; }
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function showToast(message, duration) {
+            duration = duration || 2000;
+            var toast = document.getElementById('h5-toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(function() { toast.classList.remove('show'); }, duration);
+        }
+
+        function openNavigation(lat, lng, name) {
+            var url = 'https://uri.amap.com/marker?position=' + lng + ',' + lat + '&name=' + encodeURIComponent(name) + '&coordinate=gaode&callnative=1';
+            window.open(url, '_blank');
+        }
+
+        function copyLink() {
+            var url = window.location.href;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(function() { showToast('链接已复制到剪贴板 ✓'); }).catch(function() { fallbackCopy(url); });
+            } else { fallbackCopy(url); }
+        }
+
+        function fallbackCopy(text) {
+            var textarea = document.createElement('textarea');
+            textarea.value = text; textarea.style.position = 'fixed'; textarea.style.opacity = '0';
+            document.body.appendChild(textarea); textarea.select();
+            try { document.execCommand('copy'); showToast('链接已复制到剪贴板 ✓'); } catch (e) { showToast('复制失败，请手动复制链接'); }
+            document.body.removeChild(textarea);
+        }
+
+        function shareNative() {
+            if (navigator.share) {
+                navigator.share({ title: '潮汕五一旅行路书', text: '三天两夜潮汕深度游攻略！', url: window.location.href }).catch(function() {});
+            } else { showToast('请使用浏览器的分享功能'); }
+        }
+
+        function shareWechat() { showToast('请点击右上角 ··· 分享到微信'); }
+
+        function initLoading() {
+            var bar = document.getElementById('loading-bar');
+            var screen = document.getElementById('loading-screen');
+            var progress = 0;
+            var timer = setInterval(function() {
+                progress += Math.random() * 30 + 10;
+                if (progress >= 100) {
+                    progress = 100; clearInterval(timer); bar.style.width = '100%';
+                    setTimeout(function() { screen.classList.add('fade-out'); setTimeout(function() { screen.style.display = 'none'; }, 500); }, 300);
+                } else { bar.style.width = progress + '%'; }
+            }, 150);
+        }
+
+        function initSwipeBack() {
+            var startX = 0, startY = 0, isDragging = false;
+            document.addEventListener('touchstart', function(e) {
+                var touch = e.touches[0];
+                if (touch.clientX < 20 && pageHistory.length > 1) { startX = touch.clientX; startY = touch.clientY; isDragging = true; }
+            }, { passive: true });
+            document.addEventListener('touchmove', function(e) {
+                if (!isDragging) return;
+                var touch = e.touches[0];
+                if (Math.abs(touch.clientY - startY) > Math.abs(touch.clientX - startX)) { isDragging = false; }
+            }, { passive: true });
+            document.addEventListener('touchend', function(e) {
+                if (!isDragging) return; isDragging = false;
+                if (e.changedTouches[0].clientX - startX > 80) { goBack(); }
+            }, { passive: true });
+        }
+
+        function initEvents() {
+            var btnStart = document.getElementById('btn-start');
+            if (btnStart) { btnStart.addEventListener('click', function() { navigateTo('page-overview', 'forward'); }); }
+
+            document.querySelectorAll('.h5-back-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var target = btn.dataset.target;
+                    if (target && pageHistory.indexOf(target) >= 0) { navigateTo(target, 'back'); } else { goBack(); }
+                });
+            });
+
+            document.querySelectorAll('.h5-day-card').forEach(function(card) {
+                card.addEventListener('click', function() { var target = card.dataset.target; if (target) navigateTo(target, 'forward'); });
+            });
+
+            document.querySelectorAll('.h5-tab').forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    var targetPage = tab.dataset.page;
+                    var currentPage = document.querySelector('.h5-page.active');
+                    if (currentPage && currentPage.id === targetPage) return;
+                    while (pageHistory.length > 2) pageHistory.pop();
+                    if (pageHistory[pageHistory.length - 1] !== 'page-overview') { pageHistory.push('page-overview'); }
+                    if (targetPage !== 'page-overview') { navigateTo(targetPage, 'forward'); } else { navigateTo(targetPage, 'back'); }
+                });
+            });
+
+            document.querySelectorAll('.h5-tips-card').forEach(function(card) {
+                card.addEventListener('click', function() { var modalId = card.dataset.modal; if (modalId) openModal(modalId); });
+            });
+
+            document.querySelectorAll('.h5-modal-close').forEach(function(btn) {
+                btn.addEventListener('click', function() { var modal = btn.closest('.h5-modal'); if (modal) closeModal(modal); });
+            });
+
+            document.querySelectorAll('.h5-modal').forEach(function(modal) {
+                modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(modal); });
+            });
+
+            document.querySelectorAll('.h5-nav-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    var lat = btn.dataset.lat, lng = btn.dataset.lng, name = btn.dataset.name;
+                    if (lat && lng) openNavigation(lat, lng, name || '目的地');
+                });
+            });
+
+            var btnCopy = document.getElementById('btn-copy-link');
+            if (btnCopy) btnCopy.addEventListener('click', copyLink);
+            var btnWechat = document.getElementById('btn-share-wechat');
+            if (btnWechat) btnWechat.addEventListener('click', shareWechat);
+            var btnNative = document.getElementById('btn-share-native');
+            if (btnNative) btnNative.addEventListener('click', shareNative);
+
+            window.addEventListener('popstate', function() { if (pageHistory.length > 1) goBack(); });
+
+            var homePage = document.getElementById('page-home');
+            if (homePage) {
+                var homeStartY = 0;
+                homePage.addEventListener('touchstart', function(e) { homeStartY = e.touches[0].clientY; }, { passive: true });
+                homePage.addEventListener('touchend', function(e) { if (homeStartY - e.changedTouches[0].clientY > 60) navigateTo('page-overview', 'forward'); }, { passive: true });
+            }
+        }
+
+        function init() {
+            initLoading();
+            initEvents();
+            initSwipeBack();
+            var homePage = document.getElementById('page-home');
+            if (homePage) homePage.classList.add('active');
+        }
+
+        if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); } else { init(); }
+    })();
+    </script>
+</body>
+</html>
