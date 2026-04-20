@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的旅行路书集</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            background: #fafaf9;
+            min-height: 100vh;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #1c1917 0%, #292524 50%, #44403c 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(180,83,9,0.15) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+        .guide-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid #f5f5f4;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+        .guide-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+        .guide-card:active {
+            transform: scale(0.98);
+        }
+        .guide-card-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .guide-card-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+        .guide-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .empty-card {
+            border: 2px dashed #d6d3d1;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+            color: #a8a29e;
+            transition: all 0.3s;
+            cursor: default;
+        }
+        .empty-card:hover {
+            border-color: #b45309;
+            color: #b45309;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部Hero区域 -->
+    <div class="hero-section text-white py-16 px-6 text-center relative">
+        <div class="relative z-10">
+            <div class="text-4xl mb-3">🗺️</div>
+            <h1 class="text-3xl font-bold mb-3" style="letter-spacing: 2px;">我的旅行路书集</h1>
+            <p class="text-stone-400 text-sm max-w-md mx-auto leading-relaxed">
+                每一次出发，都是一段故事<br>
+                用路书记录旅途中的美好
+            </p>
+            <div class="flex items-center justify-center gap-6 mt-6 text-xs text-stone-500">
+                <span><i class="fas fa-book-open mr-1"></i> <span id="guide-count">1</span> 本路书</span>
+                <span><i class="fas fa-map-marker-alt mr-1"></i> 持续更新中</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 路书列表 -->
+    <div class="max-w-5xl mx-auto px-4 py-8 -mt-6 relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="guide-list">
+
+            <!-- ====== 路书卡片1：潮汕 ====== -->
+            <a href="./chaoshan/" class="guide-card animate-in delay-1">
+                <div class="guide-card-img" style="background-image: url('https://zhiyan-ai-agent-with-1258344702.cos.ap-guangzhou.tencentcos.cn/with/5c0f1253-487a-4931-a4a8-630dd660210a/image_1776666987_2_1.jpg');">
+                    <div class="absolute bottom-3 left-4 z-10 text-white">
+                        <h3 class="text-xl font-bold drop-shadow-lg">潮汕三日深度游</h3>
+                        <p class="text-xs text-white text-opacity-80 mt-1">汕头 · 潮阳 · 礐石</p>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                        <span class="guide-tag bg-amber-50 text-amber-700"><i class="fas fa-calendar-alt mr-1"></i>3天2夜</span>
+                        <span class="guide-tag bg-red-50 text-red-600"><i class="fas fa-utensils mr-1"></i>美食之旅</span>
+                        <span class="guide-tag bg-teal-50 text-teal-600"><i class="fas fa-landmark mr-1"></i>文化探索</span>
+                    </div>
+                    <p class="text-stone-500 text-sm leading-relaxed">
+                        探访千年古城，品味正宗潮汕美食，体验工夫茶文化，打卡小公园骑楼群...
+                    </p>
+                    <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-100">
+                        <span class="text-xs text-stone-400"><i class="far fa-clock mr-1"></i>2026年五一</span>
+                        <span class="text-amber-600 text-sm font-medium">
+                            查看路书 <i class="fas fa-chevron-right text-xs ml-1"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- ====== 路书卡片模板（复制此卡片添加新路书） ====== -->
+            <!--
+            <a href="./新路书文件夹名/" class="guide-card animate-in delay-2">
+                <div class="guide-card-img" style="background-image: url('封面图片URL');">
+                    <div class="absolute bottom-3 left-4 z-10 text-white">
+                        <h3 class="text-xl font-bold drop-shadow-lg">路书标题</h3>
+                        <p class="text-xs text-white text-opacity-80 mt-1">目的地描述</p>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                        <span class="guide-tag bg-amber-50 text-amber-700"><i class="fas fa-calendar-alt mr-1"></i>天数</span>
+                        <span class="guide-tag bg-red-50 text-red-600"><i class="fas fa-utensils mr-1"></i>标签</span>
+                    </div>
+                    <p class="text-stone-500 text-sm leading-relaxed">
+                        路书简介描述...
+                    </p>
+                    <div class="flex items-center justify-between mt-4 pt-3 border-t border-stone-100">
+                        <span class="text-xs text-stone-400"><i class="far fa-clock mr-1"></i>出行时间</span>
+                        <span class="text-amber-600 text-sm font-medium">
+                            查看路书 <i class="fas fa-chevron-right text-xs ml-1"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            -->
+
+            <!-- 占位卡片：添加新路书 -->
+            <div class="empty-card animate-in delay-2">
+                <i class="fas fa-plus-circle text-4xl mb-3"></i>
+                <p class="font-medium">更多路书</p>
+                <p class="text-xs mt-1">敬请期待...</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="text-center py-8 text-stone-400 text-xs">
+        <p class="mb-2">🗺️ 用脚步丈量世界，用路书记录旅途</p>
+        <p>由 <a href="https://with.woa.com/" style="color: #8A2BE2;" target="_blank">With</a> 通过自然语言生成</p>
+    </footer>
+
+</body>
+</html>
